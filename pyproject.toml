@@ -1,0 +1,25 @@
+[project]
+name = "fastapi-testing"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Zak Cook", email = "zakcook4@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115.12",
+    "pydantic-settings>=2.8.1",
+]
+
+[project.scripts]
+fastapi-testing = "fastapi_testing:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
