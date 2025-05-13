@@ -30,7 +30,7 @@ async def get_config(
     return settings
 
 
-@app.get("/download/{file_id}")
+@app.get("/download/{file_id:path}")
 async def upload(
     file_id: str,
     fileservice_client: Annotated[fileservice.Client, Depends(get_fileservice_client)],
