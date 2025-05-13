@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
@@ -6,10 +7,16 @@ from pydantic_settings import (
 )
 
 
+class FileService(BaseModel):
+    datadir: str
+
+
 class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8000
     reload: bool = False
+
+    fileservice: FileService
 
     model_config = SettingsConfigDict(toml_file="config.toml")
 

@@ -1,10 +1,10 @@
 from functools import cache
-from typing import Annotated, Union
+from typing import Annotated
 
 import uvicorn
 from fastapi import Depends, FastAPI
 
-from fastapi_testing import config
+from fastapi_testing import config, fileservice
 
 app = FastAPI()
 
@@ -14,6 +14,12 @@ def get_settings() -> config.Settings:
     return config.Settings()  # type: ignore
 
 
+def get_fileservice_client(
+    settings: Annotated[config.Settings, Depends(get_settings)],
+) -> fileservice.Client:
+    return fileservice.Client(settings.fileservice.datadir)
+
+
 @app.get("/config")
 async def get_config(
     settings: Annotated[config.Settings, Depends(get_settings)],
@@ -21,9 +27,12 @@ async def get_config(
     return settings
 
 
-@app.get("/items/{item_id}")
-async def get_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/download/{file_id}")
+async def upload(
+    file_id: str,
+    fileservice_client: Annotated[fileservice.Client, Depends(get_fileservice_client)],
+):
+    return fileservice_client.download(file_id)
 
 
 def main():

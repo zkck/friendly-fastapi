@@ -8,12 +8,10 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi[standard]>=0.115.12",
+    "fastapi>=0.115.12",
     "pydantic-settings>=2.8.1",
+    "uvicorn[standard]>=0.34.2",
 ]
-
-[project.scripts]
-fastapi-testing = "fastapi_testing:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -21,5 +19,6 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "pytest>=8.3.5",
 ]

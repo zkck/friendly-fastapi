@@ -22,7 +22,7 @@
       };
       apps.format = let
         script = pkgs.writeShellScript "" ''
-          ${pkgs.ruff}/bin/ruff check --select I --fix
+          ${pkgs.ruff}/bin/ruff check --extend-select I --fix
           ${pkgs.ruff}/bin/ruff format
         '';
       in {
