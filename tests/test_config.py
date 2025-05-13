@@ -10,7 +10,7 @@ client = TestClient(main.app)
 
 @pytest.fixture
 def custom_config():
-    c = config.Settings(fileservice=config.FileService(datadir="."))
+    c = config.Settings(fileservice=config.FileService(datadir="/dummydir/"))
     with patch.dict(main.app.dependency_overrides, {main.get_settings: lambda: c}):
         yield c
 

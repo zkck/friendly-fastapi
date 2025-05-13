@@ -1,4 +1,6 @@
+import tomllib
 from functools import cache
+from pathlib import Path
 from typing import Annotated
 
 import uvicorn
@@ -11,7 +13,8 @@ app = FastAPI()
 
 @cache
 def get_settings() -> config.Settings:
-    return config.Settings()  # type: ignore
+    with Path("config.toml").open("rb") as f:
+        return config.Settings(**tomllib.load(f))
 
 
 def get_fileservice_client(
