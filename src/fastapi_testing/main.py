@@ -13,13 +13,16 @@ app = FastAPI()
 
 @cache
 def get_settings() -> config.Settings:
+    """Dependency for loading settings from disk."""
     with Path("config.toml").open("rb") as f:
-        return config.Settings(**tomllib.load(f))
+        settings = tomllib.load(f)
+    return config.Settings(**settings)
 
 
 def get_fileservice_client(
     settings: Annotated[config.Settings, Depends(get_settings)],
 ) -> fileservice.Client:
+    """Dependency for a client for downloading files."""
     return fileservice.Client(settings.fileservice.datadir)
 
 
@@ -39,7 +42,6 @@ async def upload(
 
 
 def main():
-    # load settings, fail early in case of missing config
     settings = get_settings()
     uvicorn.run(
         "main:app", host=settings.host, port=settings.port, reload=settings.reload
