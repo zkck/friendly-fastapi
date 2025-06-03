@@ -8,7 +8,7 @@ class Client:
         self.resolved_datadir = Path(datadir).resolve()
 
     def download(self, filepath: str) -> responses.Response:
-        p = Path(self.resolved_datadir, filepath).resolve()
+        p = (self.resolved_datadir / filepath).resolve()
         if not p.is_relative_to(self.resolved_datadir):
             return responses.Response("attempted directory traversal", status_code=403)
         try:

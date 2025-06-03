@@ -31,6 +31,5 @@ def test_download(fileservice_inmem: dict):
     fileservice_inmem["config.toml"] = b"hello"
 
     response = client.get("/download/config.toml")
-
     assert response.status_code == 200
     assert response.content == b"hello"
