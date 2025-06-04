@@ -6,21 +6,21 @@ from typing import Annotated
 import uvicorn
 from fastapi import Depends, FastAPI
 
-from fastapi_testing import config, fileservice
+from friendly import config, fileservice
 
 app = FastAPI()
 
 
 @cache
-def get_settings() -> config.Settings:
+def load_settings() -> config.Settings:
     """Dependency for loading settings from disk."""
     with Path("config.toml").open("rb") as f:
-        settings = tomllib.load(f)
-    return config.Settings(**settings)
+        raw_settings = tomllib.load(f)
+    return config.Settings(**raw_settings)
 
 
 def get_fileservice_client(
-    settings: Annotated[config.Settings, Depends(get_settings)],
+    settings: Annotated[config.Settings, Depends(load_settings)],
 ) -> fileservice.Client:
     """Dependency for a client for downloading files."""
     return fileservice.Client(settings.fileservice.datadir)
@@ -28,7 +28,7 @@ def get_fileservice_client(
 
 @app.get("/config")
 async def get_config(
-    settings: Annotated[config.Settings, Depends(get_settings)],
+    settings: Annotated[config.Settings, Depends(load_settings)],
 ) -> config.Settings:
     return settings
 
@@ -42,7 +42,7 @@ async def upload(
 
 
 def main():
-    settings = get_settings()
+    settings = load_settings()
     uvicorn.run(
         "main:app", host=settings.host, port=settings.port, reload=settings.reload
     )

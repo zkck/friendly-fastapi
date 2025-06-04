@@ -5,7 +5,7 @@ import pytest
 from fastapi import responses
 from fastapi.testclient import TestClient
 
-from fastapi_testing import main
+from friendly import main
 
 client = TestClient(main.app)
 

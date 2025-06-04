@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 from fastapi.testclient import TestClient
 
-from fastapi_testing import config, main
+from friendly import config, main
 
 client = TestClient(main.app)
 
