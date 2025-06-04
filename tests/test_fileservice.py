@@ -1,0 +1,24 @@
+from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+from fastapi.testclient import TestClient
+
+from fastapi_testing import config, main
+
+client = TestClient(main.app)
+
+
+@pytest.fixture
+def server_tmpdir(tmpdir):
+    datadir = Path(tmpdir / "data")
+    datadir.mkdir()
+    c = config.Settings(fileservice=config.FileService(datadir=datadir))
+    with patch.dict(main.app.dependency_overrides, {main.get_settings: lambda: c}):
+        yield c
+
+
+def test_directory_traversal(server_tmpdir: config.Settings, tmpdir):
+    with (tmpdir / "target.txt").open("w") as f:
+        f.write("secret")
+    assert client.get("/download/%2E%2E/target.txt").status_code == 403

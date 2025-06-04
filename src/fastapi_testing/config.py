@@ -1,8 +1,10 @@
+from pathlib import Path
+
 from pydantic import BaseModel
 
 
 class FileService(BaseModel):
-    datadir: str
+    datadir: Path
 
 
 class Settings(BaseModel):

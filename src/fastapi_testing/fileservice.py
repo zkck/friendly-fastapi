@@ -4,17 +4,17 @@ from fastapi import responses
 
 
 class Client:
-    def __init__(self, datadir: str) -> None:
-        self.resolved_datadir = Path(datadir).resolve()
+    def __init__(self, datadir: Path) -> None:
+        self.datadir = datadir
 
     def download(self, filepath: str) -> responses.Response:
-        p = (self.resolved_datadir / filepath).resolve()
-        if not p.is_relative_to(self.resolved_datadir):
-            return responses.Response("attempted directory traversal", status_code=403)
+        p = self.datadir / filepath
         try:
             f = p.open("rb")
         except FileNotFoundError:
             return responses.Response("file not found", status_code=404)
+        except IsADirectoryError:
+            return responses.Response("it's a directory", status_code=400)
         return responses.StreamingResponse(_iterfile(f))
 
 
