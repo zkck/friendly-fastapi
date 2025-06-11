@@ -19,7 +19,7 @@ class InMemoryFileservice:
 
 
 @pytest.fixture
-def fileservice_inmem():
+def override_fileservice():
     inmem = InMemoryFileservice()
     with patch.dict(
         main.app.dependency_overrides, {main.get_fileservice_client: lambda: inmem}
@@ -27,9 +27,8 @@ def fileservice_inmem():
         yield inmem.d
 
 
-def test_download(fileservice_inmem: dict):
-    fileservice_inmem["config.toml"] = b"hello"
-
-    response = client.get("/download/config.toml")
+def test_download(override_fileservice: dict):
+    override_fileservice["myfile"] = b"hello"
+    response = client.get("/download/myfile")
     assert response.status_code == 200
     assert response.content == b"hello"

@@ -10,7 +10,7 @@ client = TestClient(main.app)
 
 
 @pytest.fixture
-def dummy_config():
+def override_config():
     dummy_config = config.Settings(
         fileservice=config.FileService(datadir=Path("/dummydir/"))
     )
@@ -20,7 +20,7 @@ def dummy_config():
         yield dummy_config
 
 
-def test_config(dummy_config: config.Settings):
+def test_config(override_config: config.Settings):
     response = client.get("/config")
     assert response.status_code == 200
-    assert response.json() == dummy_config.model_dump(mode="json")
+    assert response.json() == override_config.model_dump(mode="json")
